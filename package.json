@@ -1,7 +1,7 @@
 {
   "name": "react-pseudo-state",
-  "version": "1.0.0",
-  "description": "A higher order component to replace pseudo-states when working with a CSS in JS solution.",
+  "version": "1.0.1",
+  "description": "Stateful pseudo-classes in React.",
   "main": "dist/index.js",
   "license": "MIT",
   "homepage": "https://jossmac.github.io/react-pseudo-state",
