@@ -1,8 +1,8 @@
-# React Pseudo state
+# React Pseudo State
 
 A higher order component to replace pseudo-states when working with a CSS in JS solution.
 
-```js
+```jsx
 import withPseudoState from 'react-pseudo-state';
 
 const ButtonElement = ({ isActive, isFocus, isHover, ...rest }) => {
