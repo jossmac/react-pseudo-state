@@ -1,8 +1,27 @@
-import React, { Component } from 'react';
+// @flow
 
-export default function withPseudoState(WrappedComponent) {
-  return class ComponentWithPseudoState extends Component {
-    actionKeys = ['Enter', ' '];
+import React, { Component, type ComponentType } from 'react';
+
+function isActionKey(event) {
+  const actionKeys = ['Enter', ' '];
+  return actionKeys.includes(event.key);
+}
+function isTouchDevice() {
+  return (
+    (window && 'ontouchstart' in window) ||
+    (navigator && navigator.maxTouchPoints)
+  );
+}
+
+type State = {
+  isActive: boolean,
+  isFocus: boolean,
+  isHover: boolean,
+};
+
+export default function withPseudoState(WrappedComponent: ComponentType<*>) {
+  return class ComponentWithPseudoState extends Component<*, State> {
+    isTouchDevice = isTouchDevice();
     state = {
       isActive: false,
       isFocus: false,
@@ -11,18 +30,28 @@ export default function withPseudoState(WrappedComponent) {
     handleBlur = () => this.setState({ isFocus: false });
     handleFocus = () => this.setState({ isFocus: true });
     handleMouseOut = () => this.setState({ isActive: false, isHover: false });
-    handleMouseOver = () => this.setState({ isHover: true });
+    handleMouseOver = () => {
+      if (!this.isTouchDevice) {
+        this.setState({ isHover: true });
+      }
+    };
     handleMouseUp = () => this.setState({ isActive: false });
     handleMouseDown = () => this.setState({ isActive: true });
-    handleKeyDown = event => {
-      if (this.actionKeys.includes(event.key)) {
+    handleKeyDown = (event: KeyboardEvent) => {
+      if (isActionKey(event)) {
         this.setState({ isActive: true });
       }
     };
-    handleKeyUp = event => {
-      if (this.actionKeys.includes(event.key)) {
+    handleKeyUp = (event: KeyboardEvent) => {
+      if (isActionKey(event)) {
         this.setState({ isActive: false });
       }
+    };
+    handleTouchStart = () => {
+      this.setState({ isActive: true });
+    };
+    handleTouchEnd = () => {
+      this.setState({ isActive: false });
     };
     render() {
       return (
@@ -35,6 +64,8 @@ export default function withPseudoState(WrappedComponent) {
           onMouseDown={this.handleMouseDown}
           onKeyDown={this.handleKeyDown}
           onKeyUp={this.handleKeyUp}
+          onTouchStart={this.handleTouchStart}
+          onTouchEnd={this.handleTouchEnd}
           {...this.state}
           {...this.props}
         />
