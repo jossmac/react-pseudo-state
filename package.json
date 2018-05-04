@@ -1,6 +1,6 @@
 {
   "name": "react-pseudo-state",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Stateful pseudo-classes in React.",
   "main": "dist/index.js",
   "license": "MIT",
