@@ -53,6 +53,7 @@
     "react-dom": "^16.3.0"
   },
   "jest": {
-    "setupTestFrameworkScriptFile": "./config/setup-tests"
+    "setupTestFrameworkScriptFile": "./config/setup-tests",
+    "collectCoverageFrom": ["src/**/*.js"]
   }
 }
