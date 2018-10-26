@@ -1,15 +1,18 @@
-/* @jsx glam */
-import glam from 'glam';
-import withPseudoState from '../../src';
+import React from 'react';
+import { css } from 'emotion';
+import withPseudoState from '../../src/withPseudoState';
 
 const gutter = 15;
+
+const mergeStr = (...args) => args.join(' ');
+const mergeObj = (...args) => args.reduce((obj, val) => ({ ...obj, ...val }), {});
 
 // styled components
 // ------------------------------
 
 export const Container = props => (
   <div
-    css={{
+    className={css({
       display: 'flex ',
       flexDirection: 'column',
       minHeight: '100vh',
@@ -20,7 +23,7 @@ export const Container = props => (
       maxWidth: 410,
       padding: '60px 15px',
       textAlign: 'center',
-    }}
+    })}
     {...props}
   />
 );
@@ -28,17 +31,18 @@ export const Container = props => (
 export const Repo = ({ isLocked, ...props }) => (
   <a
     target="_blank"
-    css={{
-      borderBottom: '1px solid rgba(0, 0, 0, 0.3)',
+    className={css({
+      borderBottom: '1px dotted rgba(0, 0, 0, 0.3)',
       color: 'inherit',
       paddingBottom: 1,
       textDecoration: 'none',
 
-      ':hover': {
+      ':hover, :focus': {
         borderBottomColor: 'rgba(0, 0, 0, 0.6)',
+        borderBottomStyle: 'solid',
         textDecoration: 'none',
       },
-    }}
+    })}
     {...props}
   />
 );
@@ -52,62 +56,51 @@ export const Repo = ({ isLocked, ...props }) => (
 const states = [
   {
     text: 'Hover',
-    show: 'isHover',
+    show: p => p.isHover,
   },
   {
     text: 'Focus',
-    show: 'isFocus',
+    show: p => p.focusOrigin === 'keyboard',
   },
   {
     text: 'Active',
-    show: 'isActive',
+    show: p => p.isActive,
   },
 ];
 
-function filter(props) {
-  return states.filter(s => props[s.show]).map(s => s.text);
-}
+const showTxt = props => states.filter(s => s.show(props)).map(s => s.text);
+const safe = (condition, obj) => (condition ? obj : {});
 
 const ButtonElement = props => {
-  const { isActive, isFocus, isHover, ...rest } = props;
-  const activeStyles = isActive
-    ? {
-        boxShadow: '4px 4px 0 rgba(0,0,0,0.15)',
-        transform: 'translate3d(4px, 4px, 0)',
-      }
-    : null;
-  const focusStyles = isFocus
-    ? {
-        boxShadow: '8px 8px 0 rgba(0,0,0,0.1)',
-        transform: 'translate3d(0, 0, 0)',
-      }
-    : null;
-  const hoverStyles = isHover
-    ? {
-        boxShadow: '12px 12px 0 rgba(0,0,0,0.15)',
-        transform: 'translate3d(-4px, -4px, 0)',
-        '&:after': {
-          bottom: -10,
-          content: ' ',
-          height: '100%',
-          position: 'absolute',
-          right: -10,
-          width: '100%',
-        },
-      }
-    : null;
+  const { focusOrigin, isActive, isFocus, isHover, ...rest } = props;
+  const activeStyles = safe(isActive, {
+    background: '#e9ecef',
+    borderColor: 'rgba(27,31,35,0.35)',
+    boxShadow: 'inset 0 0.15em 0.3em rgba(27,31,35,0.15)',
+    boxShadow: 'none',
+    transform: `none`,
+  });
+  const focusStyles = safe(focusOrigin === 'keyboard', {
+    background: 'linear-gradient(-180deg, #fafbfc, #eff3f6 90%)',
+    borderColor: 'rgba(27,31,35,0.35)',
+    outline: '4px dotted #BF2600',
+    outlineOffset: '4px',
+  });
+  const hoverStyles = safe(isHover, {
+    background: 'linear-gradient(-180deg, #fafbfc, #eff3f6 90%)',
+    borderColor: 'rgba(27,31,35,0.35)',
+    boxShadow: '0 2px 4px rgba(27,31,35,0.15)',
+  });
 
   return (
     <button
       type="button"
-      css={{
+      className={css(mergeObj({
         alignItems: 'center',
-        backgroundColor: '#BF2600',
-        border: 0,
-        borderRadius: 1,
+        background: 'linear-gradient(-180deg, #f0f3f6, #e6ebf1 90%)',
+        border: '1px solid rgba(27,31,35,0.2)',
+        borderRadius: 4,
         boxSizing: 'border-box',
-        boxShadow: '8px 8px 0 rgba(0,0,0,0.1)',
-        color: '#F4F5F7',
         cursor: 'pointer',
         display: 'flex ',
         fontFamily: 'inherit',
@@ -122,14 +115,14 @@ const ButtonElement = props => {
         position: 'relative',
         width: '100%',
         userSelect: 'none',
-
-        ...hoverStyles,
-        ...focusStyles,
-        ...activeStyles,
-      }}
-      {...rest}
+      },
+      hoverStyles,
+      focusStyles,
+      activeStyles
+    ))}
+    {...rest}
     >
-      {filter(props).join(', ') || 'Inactive'}
+      {showTxt(props).join(', ') || 'Inactive'}
     </button>
   );
 };
@@ -141,44 +134,43 @@ export const Button = withPseudoState(ButtonElement);
   ==============================
 */
 
-export const Header = props => (
-  <header css={{ marginBottom: '2em' }} {...props} />
-);
-export const Footer = props => <footer css={{ marginTop: '2em' }} {...props} />;
+export const Header = props => <header className={css({ marginBottom: '2em' })} {...props} />;
+export const Footer = props => <footer className={css({ marginTop: '2em' })} {...props} />;
 export const AsteriskText = props => (
-  <div css={{ fontSize: 14, marginTop: '2em' }} {...props} />
+  <div className={css({ fontSize: 14, marginTop: '2em' })} {...props} />
 );
-export const NoBreak = props => (
-  <span css={{ whiteSpace: 'nowrap' }} {...props} />
-);
-export const Icon = props => (
+export const NoBreak = props => <span className={css({ whiteSpace: 'nowrap' })} {...props} />;
+export const Icon = ({ className, ...props }) => (
   <div
-    css={{
-      fontSize: 64,
-      height: 64,
-      lineHeight: 1,
-      margin: '0 auto 0.5em',
-      position: 'relative',
-      width: 64,
-    }}
+    className={mergeStr(
+      css({
+        fontSize: 64,
+        height: 64,
+        lineHeight: 1,
+        margin: '0 auto 0.5em',
+        position: 'relative',
+        width: 64,
+      }),
+      className
+    )}
     {...props}
   />
 );
 export const Title = props => (
   <h1
-    css={{
+    className={css({
       display: 'inline',
       fontSize: 'inherit',
       fontWeight: 500,
       letterSpacing: '-0.025em',
       margin: 0,
-    }}
+    })}
     {...props}
   />
 );
 export const Code = props => (
   <code
-    css={{
+    className={css({
       // backgroundColor: 'rgba(0, 0, 0, 0.09)',
       backgroundColor: '#FFEBE5',
       borderRadius: '3px',
@@ -191,7 +183,7 @@ export const Code = props => (
       padding: '0 0.2em',
       position: 'relative',
       zIndex: -1,
-    }}
+    })}
     {...props}
   />
 );

@@ -36,6 +36,7 @@ a {
   text-decoration: none;
   white-space: nowrap;
 }
+a:focus,
 a:hover {
   outline: 0;
   text-decoration: underline;
