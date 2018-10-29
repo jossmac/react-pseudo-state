@@ -12,6 +12,7 @@ describe("PseudoState", () => {
   test("initial state", () => {
     const wrapper = shallow(<PseudoState>{props => <div {...props} />}</PseudoState>);
 
+    expect(wrapper.state("focusOrigin")).toBe(null);
     expect(wrapper.state("isActive")).toBe(false);
     expect(wrapper.state("isFocus")).toBe(false);
     expect(wrapper.state("isHover")).toBe(false);
@@ -30,6 +31,7 @@ describe("PseudoState", () => {
 
     wrapper.simulate("focus");
     expect(wrapper.state("isFocus")).toBe(true);
+    expect(wrapper.state("focusOrigin")).toBe('mouse');
 
     // teardown
 
@@ -41,6 +43,7 @@ describe("PseudoState", () => {
 
     wrapper.simulate("blur");
     expect(wrapper.state("isFocus")).toBe(false);
+    expect(wrapper.state("focusOrigin")).toBe(null);
   });
 
   test("keyboard interactions", () => {
@@ -72,6 +75,16 @@ describe("PseudoState", () => {
 
     wrapper.simulate("keyup", SPACE);
     expect(wrapper.state("isActive")).toBe(false);
+
+    // tabbing and focusOrigin. simulating keydown of tab not working, so we
+    // explicitly set `tabIsDown` on the class instance.
+    wrapper.instance().tabIsDown = true;
+    wrapper.simulate("focus");
+    expect(wrapper.state("focusOrigin")).toBe('keyboard');
+
+    wrapper.instance().tabIsDown = false;
+    wrapper.simulate("blur");
+    expect(wrapper.state("focusOrigin")).toBe(null);
   });
 
   test("touch interactions", () => {
