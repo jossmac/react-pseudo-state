@@ -52,7 +52,7 @@ export const Button = withPseudoState(ButtonElement);
 
 The native browser behaviour is that `Enter` is for anchors and buttons, whilst `Space` is only called on buttons. To stay compliant I recommend dynamically populating the `keyboardSupport` property.
 
-The shape of `keyboardSupport` is described below in the [Types section](/#types).
+The shape of `keyboardSupport` is described below in the [Types section](/#types). It will default to `'enter'`.
 
 ```jsx
 import { PseudoState } from 'react-pseudo-state';
