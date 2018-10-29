@@ -7,8 +7,14 @@ const ENTER_KEY_CODE = 13;
 const SPACE_KEY_CODE = 32;
 
 const not = (fn) => (...args) => !fn(...args);
-const validKey = (event, support) => {
-  if (support === 'none') return false;
+const validKey = (event: SyntheticKeyboardEvent<HTMLElement>, support) => {
+  if (support === 'auto') {
+    if (event.target && event.target.nodeName && event.target.nodeName === 'A') {
+      support = 'enter';
+    } else {
+      support = 'both';
+    }
+  }
 
   const keys = [];
   if (support === 'space' || support === 'both') keys.push(SPACE_KEY_CODE);
@@ -24,8 +30,8 @@ const isTouchDevice = () => Boolean(
 type Handlers = {
   onBlur: () => mixed,
   onFocus: () => mixed,
-  onKeyDown: (event: SyntheticKeyboardEvent<HTMLElement>) => mixed,
-  onKeyUp: (event: SyntheticKeyboardEvent<HTMLElement>) => mixed,
+  onKeyDown?: (event: SyntheticKeyboardEvent<HTMLElement>) => mixed,
+  onKeyUp?: (event: SyntheticKeyboardEvent<HTMLElement>) => mixed,
   onMouseDown: () => mixed,
   onMouseEnter: () => mixed,
   onMouseLeave: () => mixed,
@@ -48,14 +54,13 @@ export type Props = {
   // handlers must be passed the outermost node returned from this function
   children: (handlers: Handlers, snapshot: State) => Node,
   // NOTE: native behaviour dictates that `Enter` is for anchors and buttons,
-  // whilst `Space` is only called on buttons. Leave it up to consumers to
-  // decide rather that sniffing for the element type; better to be explicit.
-  keyboardSupport: 'enter' | 'space' | 'both' | 'none',
+  // whilst `Space` is only called on buttons.
+  keyboardSupport: 'auto' | 'enter' | 'space' | 'both' | 'none',
 };
 
 export default class PseudoState extends Component<Props, State> {
   static defaultProps = {
-    keyboardSupport: 'enter',
+    keyboardSupport: 'auto',
   };
   componentDidMount() {
     window.addEventListener('keydown', this.keydown);
@@ -126,11 +131,13 @@ export default class PseudoState extends Component<Props, State> {
     this.setState({ isActive: false });
   };
   render() {
+    const snapshot = this.state;
+
     const handlers = {
       onBlur: this.handleBlur,
       onFocus: this.handleFocus,
-      onKeyDown: this.handleKeyDown,
-      onKeyUp: this.handleKeyUp,
+      onKeyDown: undefined,
+      onKeyUp: undefined,
       onMouseDown: this.handleMouseDown,
       onMouseEnter: this.handleMouseEnter,
       onMouseLeave: this.handleMouseLeave,
@@ -138,7 +145,12 @@ export default class PseudoState extends Component<Props, State> {
       onTouchEnd: this.handleTouchEnd,
       onTouchStart: this.handleTouchStart,
     };
-    const snapshot = this.state;
+
+    // only bind keyboard handlers if applicable
+    if (this.props.keyboardSupport !== 'none') {
+      handlers.onKeyDown = this.handleKeyDown;
+      handlers.onKeyUp = this.handleKeyUp;
+    }
 
     return this.props.children(handlers, snapshot);
   }
