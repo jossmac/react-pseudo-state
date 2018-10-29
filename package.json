@@ -21,17 +21,21 @@
   ],
   "scripts": {
     "test": "jest",
+    "typecheck": "flow check",
+    "lint": "eslint ./src",
     "start": "webpack-dev-server --mode development",
     "build": "babel src -d dist --copy-files",
     "prepublishOnly": "npm run build",
     "build:examples": "webpack --mode production",
     "deploy:examples": "gh-pages -d examples/dist",
-    "publish:examples": "npm run build:examples && npm run deploy:examples"
+    "publish:examples": "npm run build:examples && npm run deploy:examples",
+    "precommit": "flow check && lint-staged"
   },
   "dependencies": {},
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
+    "babel-eslint": "^10.0.1",
     "babel-loader": "^7.1.4",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
@@ -41,6 +45,8 @@
     "emotion": "^9.2.12",
     "enzyme": "^3.7.0",
     "enzyme-adapter-react-16": "^1.6.0",
+    "eslint": "^5.8.0",
+    "eslint-plugin-react": "^7.11.1",
     "file-loader": "^1.1.11",
     "gh-pages": "^1.1.0",
     "html-webpack-plugin": "^3.2.0",
@@ -58,6 +64,11 @@
   },
   "jest": {
     "setupTestFrameworkScriptFile": "./config/setup-tests",
-    "collectCoverageFrom": ["src/**/*.js"]
+    "collectCoverageFrom": [
+      "src/**/*.js"
+    ]
+  },
+  "lint-staged": {
+    "*.js": "eslint"
   }
 }

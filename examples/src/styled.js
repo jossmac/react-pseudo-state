@@ -85,6 +85,10 @@ const ButtonElement = props => {
     borderColor: 'rgba(27,31,35,0.35)',
     outline: '4px dotted #BF2600',
     outlineOffset: '4px',
+
+    '::-moz-focus-inner': {
+      border: 0,
+    },
   });
   const hoverStyles = safe(isHover, {
     background: 'linear-gradient(-180deg, #fafbfc, #eff3f6 90%)',
@@ -94,7 +98,6 @@ const ButtonElement = props => {
 
   return (
     <button
-      type="button"
       className={css(mergeObj({
         alignItems: 'center',
         background: 'linear-gradient(-180deg, #f0f3f6, #e6ebf1 90%)',

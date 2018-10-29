@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Component, type ComponentType } from 'react';
+import React, { type ComponentType } from 'react';
 import PseudoState, { type State, type Props } from './PseudoState';
 
 type WrappedProps = Props & State;

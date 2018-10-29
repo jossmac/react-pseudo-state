@@ -40,7 +40,7 @@ const App = () => (
           pus<Code>hover</Code>*
         </NoBreak>.
       </Header>
-      <Button keyboardSupport="both">Pseudo State</Button>
+      <Button>Pseudo State</Button>
 
       <Footer>
         <span> by </span>

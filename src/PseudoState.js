@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Component, type ComponentType, type Node, type Ref } from 'react';
+import { Component, type Node } from 'react';
 
 const TAB_KEY_CODE = 9;
 const ENTER_KEY_CODE = 13;
