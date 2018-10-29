@@ -2,8 +2,6 @@
 
 The solution for handling pseudo-states when working with a CSS in JS solution.
 
-[![Build Status](https://travis-ci.org/jossmac/react-pseudo-state.svg?branch=master)](https://travis-ci.org/jossmac/react-pseudo-state)
-
 ### Install
 
 ```bash
@@ -94,7 +92,7 @@ type Snapshot = {
 };
 ```
 
-The actual pseudo-state component only has two properties:
+The actual `PseudoState` component only has two properties:
 
 ```jsx
 type Props = {
