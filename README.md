@@ -50,9 +50,9 @@ export const Button = withPseudoState(ButtonElement);
 
 ### Keyboard support
 
-The native browser behaviour is that `Enter` is for anchors and buttons, whilst `Space` is only called on buttons. To stay compliant I recommend dynamically populating the `keyboardSupport` property.
+The native browser behaviour is that `Enter` is for anchors and buttons, whilst `Space` is only called on buttons. To stay compliant it's recommended to dynamically populate the `keyboardSupport` property.
 
-The shape of `keyboardSupport` is described below in the [Types section](#types). It will default to `'enter'`.
+The shape of `keyboardSupport` is described below in the [Types section](#types). It will default to `'auto'`, which sniffs the event target for a node type.
 
 ```jsx
 import { PseudoState } from 'react-pseudo-state';
@@ -72,8 +72,8 @@ The first argument to the `children` function is an object of handlers, which mu
 type Handlers = {
   onBlur: () => mixed,
   onFocus: () => mixed,
-  onKeyDown: (event: SyntheticKeyboardEvent<HTMLElement>) => mixed,
-  onKeyUp: (event: SyntheticKeyboardEvent<HTMLElement>) => mixed,
+  onKeyDown?: (event: SyntheticKeyboardEvent<HTMLElement>) => mixed,
+  onKeyUp?: (event: SyntheticKeyboardEvent<HTMLElement>) => mixed,
   onMouseDown: () => mixed,
   onMouseEnter: () => mixed,
   onMouseLeave: () => mixed,
@@ -99,6 +99,6 @@ The actual `PseudoState` component only has two properties:
 ```jsx
 type Props = {
   children: (Handlers, Snapshot) => React$Node,
-  keyboardSupport: 'enter' | 'space' | 'both' | 'none',
+  keyboardSupport: 'auto' | 'enter' | 'space' | 'both' | 'none',
 };
 ```
