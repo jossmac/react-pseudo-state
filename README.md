@@ -2,6 +2,8 @@
 
 The solution for handling pseudo-states when working with a CSS in JS solution.
 
+[![Build Status](https://travis-ci.org/jossmac/react-pseudo-state.svg?branch=master)](https://travis-ci.org/jossmac/react-pseudo-state)
+
 ### Install
 
 ```bash
