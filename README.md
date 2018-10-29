@@ -98,7 +98,7 @@ The actual `PseudoState` component only has two properties:
 
 ```jsx
 type Props = {
-  children: (Handlers, State) => React$Node,
+  children: (Handlers, Snapshot) => React$Node,
   keyboardSupport: 'enter' | 'space' | 'both' | 'none',
 };
 ```
