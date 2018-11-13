@@ -1,14 +1,15 @@
 // @flow
 
-import React, { type ComponentType } from 'react';
+// $FlowFixMe
+import React, { type ComponentType, forwardRef } from 'react';
 import PseudoState, { type State, type Props } from './PseudoState';
 
 type WrappedProps = Props & State;
 
 export default function withPseudoState(WrappedComponent: ComponentType<WrappedProps>) {
-  return ({ keyboardSupport, ...props }: any) => (
+  return forwardRef(({ keyboardSupport, ...props }: any, ref) => (
     <PseudoState keyboardSupport={keyboardSupport}>
-      {(handlers, snapshot) => <WrappedComponent {...props} {...handlers} {...snapshot} />}
+      {(handlers, snapshot) => <WrappedComponent ref={ref} {...props} {...handlers} {...snapshot} />}
     </PseudoState>
-  );
+  ));
 }
