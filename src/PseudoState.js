@@ -24,7 +24,7 @@ const validKey = (event: SyntheticKeyboardEvent<HTMLElement>, support) => {
 };
 const invalidKey = not(validKey);
 const isTouchDevice = () => Boolean(
-  (window && 'ontouchstart' in window) || (navigator && navigator.maxTouchPoints)
+  (typeof window !== 'undefined' && 'ontouchstart' in window) || (typeof navigator !== 'undefined' && navigator.maxTouchPoints)
 );
 
 type Handlers = {
